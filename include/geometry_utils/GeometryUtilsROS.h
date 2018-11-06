@@ -33,31 +33,34 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 namespace geometry_utils {
 namespace ros {
 
-inline Vec3 FromROS(const geometry_msgs::Point& p) {
-  return Vec3(p.x, p.y, p.z);
+inline Vec3f FromROS(const geometry_msgs::Point& p) {
+  return Vec3f(p.x, p.y, p.z);
 }
 
-inline Vec3 FromROS(const geometry_msgs::Point32& p) {
-  return Vec3(p.x, p.y, p.z);
+inline Vec3f FromROS(const geometry_msgs::Point32& p) {
+  return Vec3f(p.x, p.y, p.z);
 }
 
-inline Vec3 FromROS(const geometry_msgs::Vector3& p) {
-  return Vec3(p.x, p.y, p.z);
+inline Vec3f FromROS(const geometry_msgs::Vector3& p) {
+  return Vec3f(p.x, p.y, p.z);
 }
 
-inline Quat FromROS(const geometry_msgs::Quaternion& msg) {
-  return Quat(msg.w, msg.x, msg.y, msg.z);
+inline Quaternionf FromROS(const geometry_msgs::Quaternion& msg) {
+  return Quaternionf(msg.w, msg.x, msg.y, msg.z);
 }
 
-inline Transform3 FromROS(const geometry_msgs::Pose& msg) {
-  return Transform3(FromROS(msg.position), QuatToR(FromROS(msg.orientation)));
+template <typename T>
+inline Transform3Base<T> FromROSPose(const geometry_msgs::Pose& msg) {
+  return Transform3Base<T>(FromROS(msg.position), QuatToR(FromROS(msg.orientation)));
 }
 
-inline Transform3 FromROS(const geometry_msgs::Transform& msg) {
-  return Transform3(FromROS(msg.translation), QuatToR(FromROS(msg.rotation)));
+template <typename T>
+inline Transform3Base<T> FromROSTransform(const geometry_msgs::Transform& msg) {
+  return Transform3Base<T>(FromROS(msg.translation), QuatToR(FromROS(msg.rotation)));
 }
 
-inline geometry_msgs::Point ToRosPoint(const Vec2& v) {
+template <typename T>
+inline geometry_msgs::Point ToRosPoint(const Vector2Base<T>& v) {
   geometry_msgs::Point msg;
   msg.x = v(0);
   msg.y = v(1);
@@ -66,7 +69,8 @@ inline geometry_msgs::Point ToRosPoint(const Vec2& v) {
   return msg;
 }
 
-inline geometry_msgs::Point ToRosPoint(const Vec3& v) {
+template <typename T>
+inline geometry_msgs::Point ToRosPoint(const Vector3Base<T>& v) {
   geometry_msgs::Point msg;
   msg.x = v(0);
   msg.y = v(1);
@@ -75,7 +79,8 @@ inline geometry_msgs::Point ToRosPoint(const Vec3& v) {
   return msg;
 }
 
-inline geometry_msgs::Point32 ToRosPoint32(const Vec2& v) {
+template <typename T>
+inline geometry_msgs::Point32 ToRosPoint32(const Vector2Base<T>& v) {
   geometry_msgs::Point32 msg;
   msg.x = v(0);
   msg.y = v(1);
@@ -84,7 +89,8 @@ inline geometry_msgs::Point32 ToRosPoint32(const Vec2& v) {
   return msg;
 }
 
-inline geometry_msgs::Point32 ToRosPoint32(const Vec3& v) {
+template <typename T>
+inline geometry_msgs::Point32 ToRosPoint32(const Vector3Base<T>& v) {
   geometry_msgs::Point32 msg;
   msg.x = v(0);
   msg.y = v(1);
@@ -93,7 +99,8 @@ inline geometry_msgs::Point32 ToRosPoint32(const Vec3& v) {
   return msg;
 }
 
-inline geometry_msgs::Vector3 ToRosVec(const Vec2& v) {
+template <typename T>
+inline geometry_msgs::Vector3 ToRosVec(const Vector2Base<T>& v) {
   geometry_msgs::Vector3 msg;
   msg.x = v(0);
   msg.y = v(1);
@@ -102,7 +109,8 @@ inline geometry_msgs::Vector3 ToRosVec(const Vec2& v) {
   return msg;
 }
 
-inline geometry_msgs::Vector3 ToRosVec(const Vec3& v) {
+template <typename T>
+inline geometry_msgs::Vector3 ToRosVec(const Vector3Base<T>& v) {
   geometry_msgs::Vector3 msg;
   msg.x = v(0);
   msg.y = v(1);
@@ -111,7 +119,8 @@ inline geometry_msgs::Vector3 ToRosVec(const Vec3& v) {
   return msg;
 }
 
-inline geometry_msgs::Quaternion ToRosQuat(const Quat& quat) {
+template <typename T>
+inline geometry_msgs::Quaternion ToRosQuat(const QuaternionBase<T>& quat) {
   geometry_msgs::Quaternion msg;
   msg.w = quat.W();
   msg.x = quat.X();
@@ -121,15 +130,17 @@ inline geometry_msgs::Quaternion ToRosQuat(const Quat& quat) {
   return msg;
 }
 
-inline geometry_msgs::Pose ToRosPose(const Transform2& trans) {
+template <typename T>
+inline geometry_msgs::Pose ToRosPose(const Transform2Base<T>& trans) {
   geometry_msgs::Pose msg;
   msg.position = ToRosPoint(trans.translation);
-  msg.orientation = ToRosQuat(RToQuat(Rot3(trans.rotation)));
+  msg.orientation = ToRosQuat(RToQuat(Rotation3Base<T>(trans.rotation)));
 
   return msg;
 }
 
-inline geometry_msgs::Pose ToRosPose(const Transform3& trans) {
+template <typename T>
+inline geometry_msgs::Pose ToRosPose(const Transform3Base<T>& trans) {
   geometry_msgs::Pose msg;
   msg.position = ToRosPoint(trans.translation);
   msg.orientation = ToRosQuat(RToQuat(trans.rotation));
@@ -137,40 +148,47 @@ inline geometry_msgs::Pose ToRosPose(const Transform3& trans) {
   return msg;
 }
 
-inline geometry_msgs::Transform ToRosTransform(const Transform2& trans) {
+template <typename T>
+inline geometry_msgs::Transform ToRosTransform(const Transform2Base<T>& trans) {
   geometry_msgs::Transform msg;
   msg.translation = ToRosVec(trans.translation);
-  msg.rotation = ToRosQuat(RToQuat(Rot3(trans.rotation)));
+  msg.rotation = ToRosQuat(RToQuat(Rotation3Base<T>(trans.rotation)));
 
   return msg;
 }
 
-inline geometry_msgs::Transform ToRosTransform(const Transform3& trans) {
+template <typename T>
+inline geometry_msgs::Transform ToRosTransform(const Transform3Base<T>& trans) {
   geometry_msgs::Transform msg;
   msg.translation = ToRosVec(trans.translation);
-  msg.rotation = ToRosQuat(RToQuat(trans.rotation));
+  msg.rotation = ToRosQuat(RTo(trans.rotation));
 
   return msg;
 }
 
-inline geometry_msgs::Quaternion ToRosQuat(const Vec3& angles) {
+template <typename T>
+inline geometry_msgs::Quaternion ToRosQuat(const Vector3Base<T>& angles) {
   return ToRosQuat(RToQuat(ZYXToR(angles)));
 }
 
-inline Vec3 RosQuatToZYX(const geometry_msgs::Quaternion& msg) {
+template <typename T>
+inline Vector3Base<T> RosQuatToZYX(const geometry_msgs::Quaternion& msg) {
   return RToZYX(QuatToR(FromROS(msg)));
 }
 
+template <typename T>
 inline double GetRoll(const geometry_msgs::Quaternion& q) {
-  return Rot3(FromROS(q)).Roll();
+  return Rotation3Base<T>(FromROS(q)).Roll();
 }
 
+template <typename T>
 inline double GetPitch(const geometry_msgs::Quaternion& q) {
-  return Rot3(FromROS(q)).Pitch();
+  return Rotation3Base<T>(FromROS(q)).Pitch();
 }
 
+template <typename T>
 inline double GetYaw(const geometry_msgs::Quaternion& q) {
-  return Rot3(FromROS(q)).Yaw();
+  return Rotation3Base<T>(FromROS(q)).Yaw();
 }
 
 }

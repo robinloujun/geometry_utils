@@ -34,6 +34,7 @@
 #include "Transform3.h"
 
 namespace geometry_utils {
+
 inline double Unroll(double x) {
   x = fmod(x, 2.0 * M_PI);
   if (x < 0)
@@ -59,78 +60,111 @@ inline double Rad2Deg(double angle) {
   return angle * 180.0 * M_1_PI;
 }
 
+inline float Rad2Deg(float angle) {
+  return angle * 180.0 * M_1_PI;
+}
+
 inline double Deg2Rad(double angle) {
   return angle * M_PI / 180.0;
 }
 
-inline Vec3 Rad2Deg(const Vec3& angles) {
-  return Vec3(Rad2Deg(angles(0)), Rad2Deg(angles(1)), Rad2Deg(angles(2)));
+inline float Deg2Rad(float angle) {
+  return angle * M_PI / 180.0;
 }
 
-inline Vec3 Deg2Rad(const Vec3& angles) {
-  return Vec3(Deg2Rad(angles(0)), Deg2Rad(angles(1)), Deg2Rad(angles(2)));
+template <typename T>
+inline Vector3Base<T> Rad2Deg(const Vector3Base<T>& angles) {
+  return Vector3Base<T>(Rad2Deg(angles(0)), Rad2Deg(angles(1)), Rad2Deg(angles(2)));
 }
 
-inline Vec3 RToZYX(const Rot3& rot) {
+template <typename T>
+inline Vector3Base<T> Deg2Rad(const Vector3Base<T>& angles) {
+  return Vector3Base<T>(Deg2Rad(angles(0)), Deg2Rad(angles(1)), Deg2Rad(angles(2)));
+}
+
+template <typename T>
+inline Vector3Base<T> RToZYX(const Rotation3Base<T>& rot) {
   return rot.GetEulerZYX();
 }
 
-inline Rot3 ZYXToR(const Vec3& angles) {
-  return Rot3(angles);
+template <typename T>
+inline Rotation3Base<T> ZYXToR(const Vector3Base<T>& angles) {
+  return Rotation3Base<T>(angles);
 }
 
-inline Rot3 QuatToR(const Quat& quat) {
-  return Rot3(quat);
+inline Rot3d ZYXToR(const Vec3d& angles) {
+  return Rot3d(angles);
 }
 
-inline Quat RToQuat(const Rot3& rot) {
-  return Quat(Eigen::Quaterniond(rot.Eigen()));
+inline Rot3f ZYXToR(const Vec3f& angles) {
+  return Rot3f(angles);
 }
 
-inline double GetRoll(const Rot3& r) {
+template <typename T>
+inline Rotation3Base<T> QuatToR(const QuaternionBase<T>& quat) {
+  return Rotation3Base<T>(quat);
+}
+
+template <typename T>
+inline QuaternionBase<T> RToQuat(const Rotation3Base<T>& rot) {
+  return QuaternionBase<T>(Eigen::Quaternion<T>(rot.Eigen()));
+}
+
+template <typename T>
+inline double GetRoll(const Rotation3Base<T>& r) {
   return r.Roll();
 }
 
-inline double GetRoll(const Quat& q) {
-  return Rot3(q).Roll();
+template <typename T>
+inline double GetRoll(const QuaternionBase<T>& q) {
+  return Rotation3Base<T>(q).Roll();
 }
 
-inline double GetPitch(const Rot3& r) {
+template <typename T>
+inline double GetPitch(const Rotation3Base<T>& r) {
   return r.Pitch();
 }
 
-inline double GetPitch(const Quat& q) {
-  return Rot3(q).Pitch();
+template <typename T>
+inline double GetPitch(const QuaternionBase<T>& q) {
+  return Rotation3Base<T>(q).Pitch();
 }
 
-inline double GetYaw(const Rot3& r) {
+template <typename T>
+inline double GetYaw(const Rotation3Base<T>& r) {
   return r.Yaw();
 }
 
-inline double GetYaw(const Quat& q) {
-  return Rot3(q).Yaw();
+template <typename T>
+inline double GetYaw(const QuaternionBase<T>& q) {
+  return Rotation3Base<T>(q).Yaw();
 }
 
-inline double SO3Error(const Quat& q1, const Quat& q2) {
-  return Rot3(q1).Error(Rot3(q2));
+template <typename T>
+inline double SO3Error(const QuaternionBase<T>& q1, const QuaternionBase<T>& q2) {
+  return Rotation3Base<T>(q1).Error(Rotation3Base<T>(q2));
 }
 
-inline double SO3Error(const Rot3& r1, const Rot3& r2) {
+template <typename T>
+inline double SO3Error(const Rotation3Base<T>& r1, const Rotation3Base<T>& r2) {
   return r1.Error(r2);
 }
 
-inline Vec3 CartesianToSpherical(const Vec3& v) {
+template <typename T>
+inline Vector3Base<T> CartesianToSpherical(const Vector3Base<T>& v) {
   double rho = v.Norm();
-  return Vec3(rho, acos(v.Z() / rho), atan2(v.Y(), v.X()));
+  return Vector3Base<T>(rho, acos(v.Z() / rho), atan2(v.Y(), v.X()));
 }
 
-inline Vec3 SphericalToCartesian(const Vec3& v) {
-  return Vec3(v(0) * sin(v(1)) * cos(v(2)), v(0) * sin(v(1)) * sin(v(2)),
+template <typename T>
+inline Vector3Base<T> SphericalToCartesian(const Vector3Base<T>& v) {
+  return Vector3Base<T>(v(0) * sin(v(1)) * cos(v(2)), v(0) * sin(v(1)) * sin(v(2)),
               v(0) * cos(v(1)));
 }
 
-inline Vec3 NEDCartesian(const Vec3& v) {
-  return Vec3(v(0), -v(1), -v(2));
+template <typename T>
+inline Vector3Base<T> NEDCartesian(const Vector3Base<T>& v) {
+  return Vector3Base<T>(v(0), -v(1), -v(2));
 }
 
 }
