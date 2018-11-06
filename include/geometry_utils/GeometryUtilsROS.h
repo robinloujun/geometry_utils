@@ -161,7 +161,7 @@ template <typename T>
 inline geometry_msgs::Transform ToRosTransform(const Transform3Base<T>& trans) {
   geometry_msgs::Transform msg;
   msg.translation = ToRosVec(trans.translation);
-  msg.rotation = ToRosQuat(RTo(trans.rotation));
+  msg.rotation = ToRosQuat(RToQuat(trans.rotation));
 
   return msg;
 }
