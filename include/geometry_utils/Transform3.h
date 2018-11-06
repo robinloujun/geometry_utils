@@ -106,6 +106,20 @@ Transform3Base<T> PoseDelta(const Transform3Base<T>& t1,
       t1.rotation.Trans() * t2.rotation);
 }
 
+template <typename T>
+Vector3Base<T> getTranslation(const Eigen::Matrix<T, 4, 4>& m) {
+  return Vector3Base<T>(
+        m(0, 3), m(1, 3), m(2, 3));
+}
+
+template <typename T>
+Rotation3Base<T> getRotation(const Eigen::Matrix<T, 4, 4>& m) {
+  return Rotation3Base<T>(
+        m(0, 0), m(0, 1), m(0, 2),
+        m(1, 0), m(1, 1), m(1, 2),
+        m(2, 0), m(2, 1), m(2, 2));
+}
+
 typedef Transform3Base<float> Transform3f;
 typedef Transform3Base<double> Transform3d;
 typedef Transform3d Transform3;
